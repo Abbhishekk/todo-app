@@ -1,29 +1,29 @@
-<h5 style="display: inline">Overdue</h5>
+<h5 style="display: inline"><%= title %></h5>
 <span
   style="display: inline"
   id="count-overdue"
   class="bg-gray-200 text-black px-3 py-1 rounded font-medium mr-2 mb-2"
-  ><%= overdue.length %></span
+  ><%= data.length %></span
 >
 <ul class="list-none">
-  <% for(var i = 0; i< overdue.length; i++){ %> <% if(!overdue[i].completed){ %>
+  <% for(var i = 0; i< data.length; i++){ %>
   <li class="Todo-item">
     <div
       class="flex items-center w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded"
     >
-      <input id="todo-checkbox-<%= overdue[i].id %>" type="checkbox" <%=
-      overdue[i].completed ? "checked":"" %> onclick = "updateTodo(<%=
-      overdue[i].completed %>, <%= overdue[i].id %>)" class="w-4 h-4
+      <input id="todo-checkbox-<%= data[i].id %>" type="checkbox" <%=
+      data[i].completed ? "checked":"" %> onclick = "updateTodo(<%=
+      data[i].completed %>, <%= data[i].id %>)" class="w-4 h-4
       text-blue-600 rounded border-gray-600" />
       <label
-        for="todo-checkbox-<%= overdue[i].id %>"
+        for="todo-checkbox-<%= data[i].id %>"
         class="ml-2 text-sm text-gray-600 cursor-pointer"
       >
-        <%= overdue[i].title %>
+        <%= data[i].title %>
       </label>
       <a
         href="#"
-        onclick="deleteTodo( <%= overdue[i].id %> )"
+        onclick="deleteTodo( <%= data[i].id %> )"
         class="hidden trash-item ml-2"
       >
         <svg
@@ -44,9 +44,9 @@
     </div>
   </li>
 
-  <% } } %>
+  <% }  %>
 
-  <h5 style="display: inline">Due Today</h5>
+  <!-- <h5 style="display: inline">Due Today</h5>
   <span
     style="display: inline"
     id="count-due-today"
@@ -193,4 +193,4 @@
       <% }  %>
     </ul>
   </ul>
-</ul>
+</ul> -->

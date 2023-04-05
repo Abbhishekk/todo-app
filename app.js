@@ -2,7 +2,7 @@
 const express = require("express");
 var csrf = require('csurf');
 const app = express();
-const { Todo } = require("./models");
+const { Todo,user } = require("./models");
 const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser');
 const path = require("path");
@@ -37,7 +37,30 @@ app.get("/", async (request, response) =>{
 })
 
 // eslint-disable-next-line no-undef
-app.use(express.static(path.join(__dirname,'public')))
+app.use(express.static(path.join(__dirname,'public')));
+
+
+app.get('/signup',(request, response) => {
+  response.render('user',{
+    csrfToken : request.csrfToken()
+  })
+})
+
+app.post('/users',async (request,response)=>{
+  try {
+    const User = await user.create({
+      firstname: request.body.firstname,
+      lastname: request.body.lastname,
+      email: request.body.email,
+      password: request.body.password
+    })
+    response.redirect('/')
+  } catch (error) {
+    console.log(error)
+  }    
+  
+  
+})
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");

@@ -50,7 +50,7 @@ passport.use(
       //passReqToCallback : true
     },
     (username, password, done) => {
-      console.log("finding user...");
+      //console.log("finding user...");
       user
         .findOne({
           where: {
@@ -67,8 +67,8 @@ passport.use(
           }
         })
         .catch((error) => {
-          console.log("Authentication failed");
-          return error;
+          //console.log("Authentication failed");
+          return (error);
         });
     }
   )
@@ -77,12 +77,12 @@ passport.use(
 const salRounds = 10;
 
 passport.serializeUser((users, done) => {
-  console.log("Serializing user in session : ", users.id);
+  //console.log("Serializing user in session : ", users.id);
   done(null, users.id);
 });
 
 passport.deserializeUser((id, done) => {
-  console.log("deserializing user from session: ", id);
+  //console.log("deserializing user from session: ", id);
   user
     .findByPk(id)
     .then((users) => {
@@ -94,7 +94,7 @@ passport.deserializeUser((id, done) => {
 });
 
 app.get("/", async (request, response) => {
-  console.log("/ is called");
+  //console.log("/ is called");
   response.render("index", {
     csrfToken: request.csrfToken(),
   });
@@ -104,7 +104,7 @@ app.get(
   "/todos",
   ConnectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    console.log("/todos is called");
+    //console.log("/todos is called");
     const loggedinUser = request.user.id;
     const allTodos = await Todo.getTodos(loggedinUser);
     const dueToday = await Todo.dueToday(loggedinUser);
@@ -134,7 +134,7 @@ app.get(
 // eslint-disable-next-line no-undef
 
 app.get("/signup", (request, response) => {
-  console.log("/signup is called");
+  //console.log("/signup is called");
   response.render("user", {
     failure: false,
     csrfToken: request.csrfToken(),
@@ -142,7 +142,7 @@ app.get("/signup", (request, response) => {
 });
 
 app.post("/users", async (request, response) => {
-  console.log("/users is called");
+  //console.log("/users is called");
   const hashPwd = await bcrypt.hash(request.body.password, salRounds);
 
   if (!request.body.firstname) {
@@ -174,13 +174,13 @@ app.post("/users", async (request, response) => {
       response.redirect("/todos");
     });
   } catch (error) {
-    console.log("Email already registered!", error);
+    //console.log("Email already registered!", error);
     response.render("user", { failure: true, csrfToken: request.csrfToken() });
   }
 });
 
 app.get("/login", (request, response) => {
-  console.log("/login is called");
+  //console.log("/login is called");
   response.render("login", { title: "LogIn", csrfToken: request.csrfToken() });
 });
 //passport.authenticate('local',{ failureRedirect : '/login',failureFlash : "login Failed"  }),
@@ -191,14 +191,14 @@ app.post(
     failureFlash: true,
   }),
   (request, response) => {
-    console.log(request.user);
-    console.log("/session is called");
+    //console.log(request.user);
+    //console.log("/session is called");
     response.redirect("/todos");
   }
 );
 
 app.get("/signout", (request, response, next) => {
-  console.log("/signout is called");
+  //console.log("/signout is called");
   request.logout((err) => {
     if (err) {
       return next(err);
@@ -208,13 +208,13 @@ app.get("/signout", (request, response, next) => {
 });
 
 app.get("/todo", async function (_request, response) {
-  console.log("Processing list of all Todos ...");
+  //console.log("Processing list of all Todos ...");
   // FILL IN YOUR CODE HERE
   try {
     const todoList = await Todo.findAll();
     return response.send(todoList);
   } catch (error) {
-    console.log(error);
+   // console.log(error);
     return response.status(422).send(error);
   }
   // First, we have to query our PostgerSQL database using Sequelize to get list of all Todos.
@@ -227,7 +227,7 @@ app.get("/todos/:id", async function (request, response) {
     const todo = await Todo.findByPk(request.params.id);
     return response.json(todo);
   } catch (error) {
-    console.log(error);
+   // console.log(error);
     return response.status(422).json(error);
   }
 });
@@ -246,7 +246,7 @@ app.post(
     }
 
     try {
-      console.log(request.user.id);
+      //console.log(request.user.id);
       const todo = await Todo.addTodo({
         title: request.body.title,
         dueDate: request.body.dueDate,
@@ -254,7 +254,7 @@ app.post(
       });
       return response.redirect("/todos");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       return response.status(422).json(error);
     }
   }

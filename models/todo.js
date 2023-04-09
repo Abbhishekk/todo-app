@@ -11,56 +11,67 @@ module.exports = (sequelize, DataTypes) => {
      */
     // eslint-disable-next-line no-unused-vars
     static associate(models) {
+      Todos.belongsTo(models.user,{
+        foreignKey: 'userId'  
+      })
       // define association here
     }
 
-    static addTodo({ title, dueDate }) {
+    static addTodo({ title, dueDate, userId }) {
       if(title != " " && dueDate != "" )
-        return this.create({ title: title, dueDate: dueDate, completed: false });
+        return this.create({ title: title, dueDate: dueDate, completed: false,userId });
       else return
     }
-    static async allCompleted(){
+    static async allCompleted(userId){
       return this.findAll({
         where : {
-          completed : true
+          completed : true,
+          userId
         }
       })
     }
-    static async dueToday(){
+    static async dueToday(userId){
       return this.findAll({
         where:{
           dueDate:{
             [Op.eq]: new Date(),
             },
+            userId,
             completed : false
           },
       });
     }
 
-    static async overdue(){
+    static async overdue(userId){
       return this.findAll({
         where:{
           dueDate:{
             [Op.lt]: new Date(),
             },
+            userId,
             completed : false
           },
       });
     }
 
-    static async duelater(){
+    static async duelater(userId){
       return this.findAll({
         where:{
           dueDate:{
             [Op.gt]: new Date(),
             },
+            userId,
             completed : false
           },
       });
     }
 
-    static getTodos(){
-      return this.findAll();
+    static getTodos(userId){
+      return this.findAll({
+        where : {
+          userId
+        }
+      });
     }
 
     setCompletionStatus(complete) {
@@ -70,9 +81,24 @@ module.exports = (sequelize, DataTypes) => {
 
   }
   Todos.init({
-    title: DataTypes.STRING,
-    dueDate: DataTypes.DATEONLY,
-    completed: DataTypes.BOOLEAN
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+          notNull: true,
+          len: 5
+      }},
+    dueDate: {
+      type :DataTypes.DATEONLY,
+      allowNull : false,
+      validate :{
+        notNull : true,
+      }
+    },
+    completed: {
+      type : DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {
     sequelize,
     modelName: 'Todo',

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./css/styles.css" />
+  <title>To-do-manager</title>
+</head>
+<script>
+  var token = document
+                      .querySelector('meta[name = "csrf-token"]')
+                      .getAttribute('content');
+  function updateTodo(complete,id){
+    fetch(`/todos/${id}`,{
+      method : 'PUT',
+      headers : {"content-type" : 'application/json'},
+      body : JSON.stringify({
+        "completed" : complete,
+        "_csrf" : token
+      }),
+    })
+    .then((res) =>{
+      if(res.ok){
+      window.location.reload();
+    }
+    })
+    .catch((error)=> console.log(error)); 
+  }
+
+  function deleteTodo(id){
+    fetch(`/todos/${id}`,{
+      method : 'DELETE',
+      headers : {"content-type" : 'application/json'},
+      body : JSON.stringify({
+        "_csrf" : token
+      })
+    })
+    .then((res) =>{
+      if(res.ok){
+        window.location.reload();
+      }
+       
+    })
+    .catch((error)=> console.log(error)); 
+  }
+</script>
+
+<body>
+  <div class="grid grid-cols-6">
+    <div class="col-start-3 col-span-2">
+      <%- include('header.ejs') %>
+      <a href="/signout">Sign-out</a>
+        <form action="/todos" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+          <div class="flex gap-2 py-4">
+            <div class="font-auto">
+              <input type="text" name="title" placeholder="What's Next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+            </div>
+            <div class="flex-auto">
+              <input type="date" name="dueDate" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4" required />
+            </div>
+            <div class="flex-none">
+              <button type="submit" class="bg-green-600 h-auto text-white px-5 py-2 rounded font-medium mr-2 mb">Add</button>
+            </div>
+          </div>
+        </form>
+        <ul>
+          <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                    <li class="text-red-600"> <%= messages.error[i] %></li>
+            <% } %>
+          <% } %>
+        </ul>
+        <div>
+          <%- include('todos.ejs', {title: "Overdue", data: overdue}) %>
+          <%- include('todos.ejs', {title: "Due Today", data: dueToday}) %>
+          <%- include('todos.ejs', {title: "Due Later", data: duelater}) %>
+          <%- include('todos.ejs', {title: "Completed Items", data: allCompleted}) %>
+        </div>
+    </div>
+  </div>
+</body>
+</html>

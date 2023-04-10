@@ -67,8 +67,8 @@ passport.use(
           }
         })
         .catch((error) => {
-          //console.log("Authentication failed");
-          return (error);
+          console.log("Authentication failed");
+          return done(error);
         });
     }
   )

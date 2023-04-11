@@ -12,7 +12,7 @@ module.exports = {
       fields: ['userId'],
       type: 'foreign key',
       references: {
-        table: 'Users',
+        table: 'user',
         field: 'Id'
       }
     })
@@ -26,7 +26,7 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
     
-    await queryInterface.removeColumn('Todo','userId');
+    await queryInterface.removeColumn('Todos','userId');
     /**
      * Add reverting commands here.
      *

@@ -58,12 +58,17 @@ passport.use(
           },
         })
         .then(async (users) => {
-          //console.log("user found")
-          const result = await bcrypt.compare(password, users.password);
-          if (result) {
-            return done(null, users);
-          } else {
-            return done(null, false, { message: "Invalid Password " });
+          if(users){
+            console.log("user found")
+            const result = await bcrypt.compare(password, users.password);
+            if (result) {
+              return done(null, users);
+            } else {
+              return done(null, false, { message: "Invalid Password " });
+            }
+          }
+          else{
+            return done(null,false, {message : "Email not registered"})
           }
         })
         .catch((error) => {

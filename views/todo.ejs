@@ -53,6 +53,7 @@
     <div class="col-start-3 col-span-2">
       <%- include('header.ejs') %>
       <a href="/signout">Sign-out</a>
+      <h1 class="text-2xl">Welcome <%= name %></h1>
         <form action="/todos" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
           <div class="flex gap-2 py-4">

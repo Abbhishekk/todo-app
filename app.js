@@ -100,9 +100,14 @@ passport.deserializeUser((id, done) => {
 
 app.get("/", async (request, response) => {
   console.log("/ is called");
-  response.render("index", {
-    csrfToken: request.csrfToken(),
-  });
+  if(request.isAuthenticated()){
+    response.redirect('/todos');
+  }
+  else{
+    response.render("index", {
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 
 app.get(
@@ -122,6 +127,7 @@ app.get(
         duelater,
         overdue,
         allCompleted,
+        name : request.user.firstname,
         csrfToken: request.csrfToken(),
       });
     } else {
@@ -140,10 +146,15 @@ app.get(
 
 app.get("/signup", (request, response) => {
   console.log("/signup is called");
-  response.render("user", {
-    failure: false,
-    csrfToken: request.csrfToken(),
-  });
+  if(request.isAuthenticated()){
+    response.redirect('/todos')
+  }
+  else{
+    response.render("user", {
+      failure: false,
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 
 app.post("/users", async (request, response) => {
@@ -186,7 +197,12 @@ app.post("/users", async (request, response) => {
 
 app.get("/login", (request, response) => {
   console.log("/login is called");
-  response.render("login", { title: "LogIn", csrfToken: request.csrfToken() });
+  if(request.isAuthenticated()){
+    response.redirect('/todos');
+  }
+  else{
+    response.render("login", { title: "LogIn", csrfToken: request.csrfToken() });
+  }
 });
 //passport.authenticate('local',{ failureRedirect : '/login',failureFlash : "login Failed"  }),
 app.post(

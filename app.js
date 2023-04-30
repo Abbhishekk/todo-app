@@ -169,6 +169,10 @@ app.post("/users", async (request, response) => {
     request.flash("error", "Enter email");
     return response.redirect("/signup");
   }
+  if (!request.body.password) {
+    request.flash("error", "Enter password");
+    return response.redirect("/signup");
+  }
 
   //console.log(hashPwd)
   try {
